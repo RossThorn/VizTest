@@ -10,8 +10,8 @@ var counter = 0;
 
       //create the map
        map = L.map('mapid', {
-          center: [0, 0],
-          zoom: 3,
+          center: [45, -89],
+          zoom: 6,
           //maxBounds: bounds,
           maxBoundsViscosity:.7
       });
