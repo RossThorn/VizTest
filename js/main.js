@@ -77,12 +77,12 @@ function d3Viz(map){
 			.style("fill", "red")
 			.attr("r", 20);
       console.log(map);
-
-      map.on("viewreset", update());
-
-
-
-
+      map.on("load", update());
+       map.on("zoom", function(){
+         console.log("ya zoomed gurl")
+         update();
+       });
+      // map.on("move", update());
 
 	})
   };
@@ -103,4 +103,3 @@ function update() {
 
 
 $(document).ready(createMap);
-map.on("viewreset", update());
