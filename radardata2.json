@@ -1,0 +1,20 @@
+[
+    [
+      {"area": "Birch ", "value": 80},
+      {"area": "Maple", "value": 40},
+      {"area": "Oak ", "value": 40},
+      {"area": "Willow ", "value": 90},
+      {"area": "Aspen ", "value": 60},
+      {"area": "Spruce ", "value": 80}
+  	],
+
+    [
+      {"area": "Birch ", "value": 20},
+      {"area": "Maple", "value": 60},
+      {"area": "Oak ", "value": 45},
+      {"area": "Willow ", "value": 90},
+      {"area": "Aspen ", "value": 72},
+      {"area": "Spruce ", "value": 10}
+  	]
+
+  ]

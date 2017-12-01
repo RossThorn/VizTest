@@ -17,3 +17,28 @@ body {
 	.tooltip {
 		fill: #333333;
 	}
+	.area.year1, .year1 .circle {
+	  fill: #4F77BB !important;
+	  stroke: #4F77BB !important;
+	}
+	.area.year2, .year2 .circle {
+	  fill: #A6CFE5 !important;
+	  stroke: #A6CFE5 !important;
+	}
+
+	.area.year3, .year3 .circle {
+	  fill: #31A148 !important;
+	  stroke: #31A148 !important;
+	}
+
+
+.line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 2px;
+}
+
+.area {
+  fill: steelblue;
+	opacity: 0.5;
+}
