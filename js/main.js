@@ -1,69 +1,68 @@
 var feature;
 var map;
 var counter = 0;
-  //function to instantiate the Leaflet map
-  function createMap(){
+//function to instantiate the Leaflet map
+function createMap(){
 
-      var southWest = L.latLng(-90, -180),
-      northEast = L.latLng(90, 180),
-      bounds = L.latLngBounds(southWest, northEast);
+  var southWest = L.latLng(-90, -180),
+  northEast = L.latLng(90, 180),
+  bounds = L.latLngBounds(southWest, northEast);
 
-      //create the map
-       map = L.map('mapid', {
-          center: [45, -89],
-          zoom: 6,
-          //maxBounds: bounds,
-          maxBoundsViscosity:.7
-      });
+  //create the map
+  map = L.map('mapid', {
+    center: [45, -89],
+    zoom: 6,
+    //maxBounds: bounds,
+    maxBoundsViscosity:.7
+  });
 
-      //add OSM base tilelayer
-      L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
-          attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ',
-          minZoom:2
-      }).addTo(map);
+  //add OSM base tilelayer
+  L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
+    attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ',
+    minZoom:2
+  }).addTo(map);
 
-      // Create necessary panes in correct order
-      map.createPane("pointsPane");
-      map.createPane("polygonsPane");
+  // Create necessary panes in correct order
+  map.createPane("pointsPane");
+  map.createPane("polygonsPane");
 
 
-      //window resize function so map takes up entirety of screen on resize
-      $(window).on("resize", function () { $("#mapid").height($(window).height()); map.invalidateSize(); }).trigger("resize");
-      $(document).ready(function() {$(window).resize(function() {
-      var bodyheight = $(this).height();
-      $("#page-content").height(bodyheight-70);
-    }).resize();
+  //window resize function so map takes up entirety of screen on resize
+  $(window).on("resize", function () { $("#mapid").height($(window).height()); map.invalidateSize(); }).trigger("resize");
+  $(document).ready(function() {$(window).resize(function() {
+    var bodyheight = $(this).height();
+    $("#page-content").height(bodyheight-70);
+  }).resize();
   });
 
   d3Viz(map);
 
 
-  };
+};
 
 //////////////////////////////////////////////////////////////////////////
 
 function d3Viz(map){
 
-    /* Initialize the SVG layer */
-	L.svg().addTo(map)
+  /* Initialize the SVG layer */
+  L.svg().addTo(map)
 
-	/* We simply pick up the SVG from the map object */
-	var svg = d3.select("#mapid").select("svg"),
-	g = svg.append("g");
+  /* We simply pick up the SVG from the map object */
+  var svg = d3.select("#mapid").select("svg"),
+  g = svg.append("g");
   var sites = {"objects":[
-{"plot":{"coordinates":[45,-90]}}
-]};
+    {"plot":{"coordinates":[45,-90]}}
+  ]};
 
 
 
-	d3.json(sites, function() {
-		/* Add a LatLng object to each item in the dataset */
-		sites.objects.forEach(function(d) {
-			d.LatLng = new L.LatLng(d.plot.coordinates[0],
-									d.plot.coordinates[1]);
+  d3.json(sites, function() {
+    /* Add a LatLng object to each item in the dataset */
+    sites.objects.forEach(function(d) {
+      d.LatLng = new L.LatLng(d.plot.coordinates[0],
+                              d.plot.coordinates[1]);
 
-		})
-    console.log(sites);
+    })
 
 
 
@@ -143,75 +142,59 @@ function d3Viz(map){
     //
     //  });
 
+    // Config for the Radar chart
+    var width = 100,
+    height = 100;
+    var config = {
+      w: width,
+      h: height,
+      maxValue: 100,
+      levels: 5,
+      ExtraWidthX: 300
+    };
 
+    // Create containing divs for each chart
+    feature = g.selectAll("plots")
+    .data(sites.objects)
+    .enter().append("g")
+    .attr("id", function (d, i) {
+      // returns vis-0, vis-1, vis-2, etc.
+      var id = 'vis-' + i;
+      // console.log(id);
+      return id;
+    });
 
-      // Attempt to get the radar chart on the map
-		 feature = g.selectAll("plots")
-			 .data(sites.objects)
-			.enter().append(
-        function(){
-        var width = 100,
-            height = 100;
-
-        // Config for the Radar chart
-        var config = {
-            w: width,
-            h: height,
-            maxValue: 100,
-            levels: 5,
-            ExtraWidthX: 300
-        };
-        //Call function to draw the Radar chart
-        d3.json("radardata2.json", function(error, data) {
-          // console.log(data);
-            if (error) throw error;
-            RadarChart.draw("g", data, config);
-        });
-
+    // Query the radar data
+    d3.json("radardata2.json", function(error, data) {
+      // console.log(data);
+      if (error) throw error;
+      feature.each(function (d, i) {
+        // Call function to draw the Radar chart
+        RadarChart.draw("#vis-" + i, data, config);
       });
+    });
 
-
-
-
-      // // The plain circle on the map.
-      // feature = g.selectAll("plots")
- 		  // .data(sites.objects)
-      // .enter().append("circle")
-			// .style("stroke", "black")
-			// .style("opacity", .6)
-			// .style("fill", "red")
-			// .attr("r", function(){
-      //   var radius = Math.random()*30;
-      //   return radius;
-      // });
-
-      console.log("boom")
-
-      map.on("load", update());
-      map.on("zoom", function(){
-         console.log("ya zoomed gurl")
-         update();
-       });
-       map.on("move", function(){
-         console.log("ya moved gurl")
-         update();
-       });
-      // map.on("move", update());
-
-	})
-  };
+    map.on("load", update());
+    map.on("zoom", function(){
+      console.log("ya zoomed gurl")
+      update();
+    });
+    map.on("move", function(){
+      console.log("ya moved gurl")
+      update();
+    });
+  })
+};
 
 ////////////////////////////////////////////////////////////////////////////////
 function update() {
   counter ++;
   // console.log(counter);
   // console.log(feature);
-  feature.attr("transform",
-  function(d) {
+  feature.attr("transform", function(d) {
     console.log(d);
     return "translate("+map.latLngToLayerPoint(d.LatLng).x +","+map.latLngToLayerPoint(d.LatLng).y +")";
-    }
-  )
+  })
 };
 //////////////////////////////////////////////////////////////////////////
 
