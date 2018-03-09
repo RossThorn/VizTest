@@ -12,7 +12,7 @@ var counter = 0;
        map = L.map('mapid', {
           center: [45, -89],
           zoom: 6,
-          //maxBounds: bounds,
+          maxBounds: bounds,
           maxBoundsViscosity:.7
       });
 
@@ -170,7 +170,8 @@ function d3Viz(map){
 
       });
 
-
+      // Everything breaks after the end of the .append function for the radar chart.
+      // This is why it does not relocate correctly on zoom/move.
 
 
       // // The plain circle on the map.
@@ -202,6 +203,7 @@ function d3Viz(map){
   };
 
 ////////////////////////////////////////////////////////////////////////////////
+
 function update() {
   counter ++;
   // console.log(counter);
